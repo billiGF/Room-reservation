@@ -6,12 +6,15 @@ from schema.meeting_room import MeetingRoomCreate
 router = APIRouter()
 
 
-@router.post('/meeting_rooms/')
+@router.post(
+            '/meeting_rooms/', 
+            response_model=MeetingRoomCreate, 
+            response_model_exclude_none=True
+)
 async def create_new_meeting_room(
         meeting_room: MeetingRoomCreate,
 ):
     room_id = await get_room_id_by_name(meeting_room.name)
-    # Если такой объект уже есть в базе - вызываем ошибку:
     if room_id is not None:
         raise HTTPException(
             status_code=422,
