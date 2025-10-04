@@ -1,0 +1,13 @@
+# --- Main ---
+fastapi=0.117.1
+uvicorn["standart"]=0.37.0
+
+# --- Database ---
+sqlalchemy=2.0.43
+aiosqlite=0.21.0
+
+# --- Migrations ---
+alembic=1.16.5
+
+# --- Config ---
+pydantic-settings=2.11.0
