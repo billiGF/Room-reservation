@@ -14,7 +14,7 @@ class MeetingRoomBase(BaseModel):
 
 class MeetingRoomUpdate(MeetingRoomBase):
     name: Optional[str] = Field(None, min_length=2, max_length=100)
-
+    
 
 class MeetingRoomCreate(MeetingRoomBase):
     name: str = Field(min_length=4, max_length=100)
@@ -22,6 +22,6 @@ class MeetingRoomCreate(MeetingRoomBase):
 
 class MeetingRoomDB(MeetingRoomCreate):
     id: int 
-
+    
     class Config:
         from_attributes=True

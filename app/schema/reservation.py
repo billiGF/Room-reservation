@@ -17,6 +17,7 @@ class ReservationCreate(ReservationUpdate):
     meetingroom_id: int
 
     @validator('from_reserve')
+
     def check_from_reserve_later_than_now(cls, value):
         if value <= datetime.now():
             raise ValueError(
@@ -39,4 +40,4 @@ class ReservationDB(ReservationBase):
     meetingroom_id: int
 
     class Config:
-        orm_mode = True 
+        fron_attributes = True 
