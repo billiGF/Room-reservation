@@ -1,18 +1,27 @@
-from pydantic import BaseModel, root_validator, validator
-from datetime import datetime
+from pydantic import BaseModel, root_validator, validator, Extra, Field
+from datetime import datetime, timedelta
+
+FROM_TIME = (
+    datetime.now() + timedelta(minutes=10)
+).isoformat(timespec='minutes')
+
+TO_TIME = (
+    datetime.now() + timedelta(hours=1)
+).isoformat(timespec='minutes')
 
 
 class ReservationBase(BaseModel):
-    from_reserve: datetime
-    to_reserve: datetime
+    from_reserve: datetime = Field(examples=[FROM_TIME])
+    to_reserve: datetime = Field(examples=[TO_TIME])
+
+    class Config:
+        extra = Extra.forbid
     
 
-# Схема для полученных данных.
 class ReservationUpdate(ReservationBase):
     pass
 
 
-# Схема для полученных данных.
 class ReservationCreate(ReservationUpdate):
     meetingroom_id: int
 
@@ -34,7 +43,6 @@ class ReservationCreate(ReservationUpdate):
 
 
 
-# Схема для возвращаемого объекта.
 class ReservationDB(ReservationBase):
     id: int
     meetingroom_id: int

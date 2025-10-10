@@ -32,22 +32,24 @@ async def check_meeting_room_exists(
     return meeting_room 
 
 
-async def check_reservation_intersections(**kwargs):
-    info = await reservation_crud.get_reservations_at_the_same_time(**kwargs)
-    if info is not None:
+
+async def check_reservation_intersections(**kwargs) -> None:
+    reservations = await reservation_crud.get_reservations_at_the_same_time(
+        **kwargs
+    )
+    if reservations:
         raise HTTPException(
             status_code=422,
-            detail={info}
-        )
-    
+            detail=str(reservations)
+        ) 
 
 async def check_reservation_before_edit(
         reservation_id: int, 
         session: AsyncSession):
-    info = await reservation_crud.remove(reservation_id, session)
-    if info is None:
+    info = await reservation_crud.get(reservation_id, session)
+    if not info:
         raise HTTPException(
-            status_code=404,
-            detail=f'Reservation {reservation_id}, not found!'
+            status_code=422,
+            detail=f"Rservation with {reservation_id} Not Found"
         )
     return info
