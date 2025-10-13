@@ -6,6 +6,11 @@ from schema.meeting_room import MeetingRoomCreate, MeetingRoomDB, MeetingRoomUpd
 from core.db import get_async_session, AsyncSession
 from api.validators import check_name_duplicate, check_meeting_room_exists #validation
 
+from crud.reservation import reservation_crud
+from schema.reservation import ReservationDB
+
+from core.user import current_superuser
+
 router = APIRouter()
 
 
@@ -13,11 +18,13 @@ router = APIRouter()
     '/',
     response_model=MeetingRoomDB,
     response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)]
 )
 async def create_new_meeting_room(
         meeting_room: MeetingRoomCreate,
         session: AsyncSession = Depends(get_async_session),
 ):
+    """Only for superusers"""
     await check_name_duplicate(meeting_room.name, session)
     new_room = await meeting_room_crud.create(meeting_room, session)
     return new_room
@@ -39,12 +46,14 @@ async def get_all_meeting_rooms(
     '/{meeting_room_id}',
     response_model=MeetingRoomDB,
     response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)]
 )
 async def partially_update_meeting_room(
         meeting_room_id: int,
         obj_in: MeetingRoomUpdate,
         session: AsyncSession = Depends(get_async_session),
 ):
+    """Only For Superusers"""
     meeting_room = await check_meeting_room_exists(
         meeting_room_id, session
     )
@@ -62,18 +71,17 @@ async def partially_update_meeting_room(
     '/{meeting_room_id}',
     response_model=MeetingRoomDB,
     response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)]
 )
 async def remove_meeting_room(
         meeting_room_id: int,
         session: AsyncSession = Depends(get_async_session),
 ):
+    """Only For Superusers"""
     meeting_room = await check_meeting_room_exists(meeting_room_id, session)
     meeting_room = await meeting_room_crud.remove(meeting_room, session)
     return meeting_room
 
-
-from crud.reservation import reservation_crud
-from schema.reservation import ReservationDB
 from fastapi import Path
 @router.get(
     '/reservations',
